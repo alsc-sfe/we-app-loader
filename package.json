@@ -1,0 +1,80 @@
+{
+  "name": "@saasfe/we-app-loader",
+  "version": "1.0.0",
+  "description": "we app loader",
+  "homepage": "https://github.com/alsc-sfe/we-app-loader",
+  "author": "zetay",
+  "files": [
+    "document",
+    "src",
+    "lib",
+    "es",
+    "_gitignore",
+    ".gitignore",
+    ".babelrc",
+    ".eslintignore",
+    ".eslintrc",
+    ".stylelintignore",
+    ".stylelintrc",
+    "abc.json",
+    "app.config.ts",
+    "package.json",
+    "README.md",
+    "tsconfig.json"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "dependencies": {
+    "@saasfe/we-app-react-router": "^1.0.3",
+    "single-spa": "^4.4.1",
+    "tslib": "1"
+  },
+  "devDependencies": {
+    "@types/classnames": "2",
+    "@types/react": "16",
+    "@types/react-dom": "16",
+    "antd": "3",
+    "classnames": "2",
+    "copyfiles": "2",
+    "cross-env": "5",
+    "lesshint": "2",
+    "pre-commit": "1",
+    "prop-types": "15",
+    "react": "16",
+    "react-dom": "16",
+    "rimraf": "2",
+    "stylelint": "7",
+    "stylelint-config-standard": "16",
+    "@typescript-eslint/eslint-plugin": "1",
+    "@typescript-eslint/parser": "1",
+    "eslint": "5",
+    "eslint-config-ali": "7",
+    "eslint-plugin-import": "2",
+    "eslint-plugin-react": "7",
+    "eslint-plugin-react-hooks": "1",
+    "typescript": "3"
+  },
+  "peerDependencies": {
+    "classnames": ">=2.0.0",
+    "prop-types": ">=15.0.0",
+    "react": ">=16.0.0",
+    "react-dom": ">=16.0.0",
+    "antd": ">=3.0.0"
+  },
+  "scripts": {
+    "lint": "npm run tslint && npm run stylelint",
+    "tslint": "eslint ./src --ext '.ts,.tsx,.js,.jsx' --fix",
+    "stylelint": "stylelint src/**/*.less --syntax less --fix",
+    "compile": "npm run common && npm run es",
+    "assets": "copyfiles -u 1 src/**/*.less lib/",
+    "common": "rimraf ./lib && tsc --module CommonJS --outDir lib && copyfiles -u 1 \"src/**/*.less\" lib/",
+    "es": "rimraf ./es && tsc --module ES2015 --outDir es && copyfiles -u 1 \"src/**/*.less\" es/"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}

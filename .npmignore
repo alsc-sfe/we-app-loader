@@ -1,0 +1,12 @@
+dist
+node_modules
+.editorconfig
+.eslintignore
+.eslintrc
+.gitignore
+.npmignore
+.stylelintignore
+.stylelintrc
+abc.json
+app.config.ts
+tsconfig.json
