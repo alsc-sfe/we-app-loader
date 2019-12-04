@@ -16,8 +16,15 @@ PC模板
 ````
 
 ````jsx
+import './named-register';
+import './modules';
 import { render } from './helper';
+import { Router, Route } from '@saasfe/we-app-react-router';
 import MicroAppLoader from "@saasfe/we-app-loader";
+
+window.MicroAppLoader = MicroAppLoader;
+
+MicroAppLoader.routerType = MicroAppLoader.RouterType.hash;
 
 MicroAppLoader.start({
   // 路由类型
@@ -65,10 +72,13 @@ MicroAppLoader.start({
       
     },
     {
-      microAppConfigPath: 'alsc-saas/web-boh-dish/1.0.3',      
+      microAppConfigPath: 'alsc-saas/web-crm-dashboard/1.1.6',     
     },
     {
-      microAppConfigPath: 'alsc-saas/web-crm-member/1.3.2',
+      microAppConfigPath: 'alsc-saas/web-boh-org/1.0.2',
+    },
+    {
+      microAppConfigPath: 'alsc-saas/web-boh-webpos/1.0.3',
     },
   ],
   lifecycleTemplateFunction({
@@ -91,7 +101,18 @@ MicroAppLoader.start({
           const moduleContainer = getModuleContainer();
 
           render(
-            React.createElement(App),
+            React.createElement(
+              Router, 
+              loaderConfig.router, 
+              React.createElement(
+                Route, 
+                {
+                  route,
+                  routeIgnore,
+                }, 
+                React.createElement(App)
+              )
+            ),
             moduleContainer,
           );
         }),

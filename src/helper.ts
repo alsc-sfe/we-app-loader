@@ -284,75 +284,50 @@ export function initApps(loaderConfig: LoaderConfig) {
   } = loaderConfig as LoaderConfig;
 
   // 集成的微应用配置
-  microApps.forEach((loaderConfigAppConfig: MicroApp) => {
-    getMicroAppConfig({
+  microApps.forEach(async (loaderConfigAppConfig: MicroApp) => {
+    const microAppConfig = await getMicroAppConfig({
       loaderConfigAppConfig,
       getMicroAppConfigPath,
-    }).then((microAppConfig) => {
-      const { microAppName, modules } = microAppConfig as MicroAppConfig;
+    });
 
-      if (!microAppName) {
-        throw new Error('Please specify microAppName in loaderConfig or appConfig');
+    const { microAppName, modules } = microAppConfig as MicroAppConfig;
+
+    if (!microAppName) {
+      throw new Error('Please specify microAppName in loaderConfig or appConfig');
+    }
+
+    modules.forEach((
+      module,
+      index
+    ) => {
+      const { moduleName, route, routeIgnore, afterRouteDiscover } = module;
+
+      if (!moduleName) {
+        throw new Error(`Please specify moduleName in ${microAppName}.modules[${index}]`);
+      }
+      if (!route && !routeIgnore) {
+        throw new Error(`Please specify route/routeIgnore in ${microAppName}.modules[${index}]`);
       }
 
-      modules.forEach((
-        module,
-        index
-      ) => {
-        const { moduleName, route, routeIgnore, afterRouteDiscover } = module;
-
-        if (!moduleName) {
-          throw new Error(`Please specify moduleName in ${microAppName}.modules[${index}]`);
-        }
-        if (!route && !routeIgnore) {
-          throw new Error(`Please specify route/routeIgnore in ${microAppName}.modules[${index}]`);
-        }
-
-        const moduleId = getModuleId(microAppName, moduleName);
-        singleSpa.registerApplication(
-          moduleId,
-          makeLifecycle({
-            loaderConfig,
-            microAppConfig,
-            module,
-          }),
-          makeActivityFunction({
-            route,
-            routeIgnore,
-            routerType: (router as LoaderConfigRouter).routerType,
-            microAppName,
-            basename: (router as LoaderConfigRouter).basename,
-            afterRouteDiscover,
-          }),
-        );
-      });
-
-      singleSpa.start();
+      const moduleId = getModuleId(microAppName, moduleName);
+      singleSpa.registerApplication(
+        moduleId,
+        makeLifecycle({
+          loaderConfig,
+          microAppConfig,
+          module,
+        }),
+        makeActivityFunction({
+          route,
+          routeIgnore,
+          routerType: (router as LoaderConfigRouter).routerType,
+          microAppName,
+          basename: (router as LoaderConfigRouter).basename,
+          afterRouteDiscover,
+        }),
+      );
     });
-  });
 
-  // 异常情况注册
-  // 404
-  // singleSpa.registerApplication(
-  //   '__MICRO_APP_MODULE_404__',
-  //   makeLifecycle({
-  //     loaderConfig,
-  //     microAppConfig: {
-  //       microAppName: '',
-  //     },
-  //     module: {
-  //       moduleName: '404',
-  //     }
-  //   }),
-  //   () => {
-  //     let match = false;
-  //     for (let i = 0, len = allActivityFunctions.length; len < i; i++) {
-  //       match = !allActivityFunctions[i]();
-  //       if (match) {
-  //         break;
-  //       }
-  //     }
-  //     return match;
-  //   }
-  // );
+    singleSpa.start();
+  });
 }
